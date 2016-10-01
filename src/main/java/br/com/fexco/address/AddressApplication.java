@@ -1,29 +1,21 @@
 package br.com.fexco.address;
 
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListenableFutureTask;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.client.RestTemplate;
 
 import br.com.fexco.address.model.Address;
-import br.com.fexco.address.repo.AddressRepository;
 
 @Configuration
 @EnableAutoConfiguration
@@ -36,18 +28,36 @@ public class AddressApplication {
 		SpringApplication.run(AddressApplication.class, args);
 	}
 
-	
-	@Autowired
-	private AddressRepository addressApplication;
+	@Bean
+	public JedisConnectionFactory redisConnectionFactory() {
+		JedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory();
+		redisConnectionFactory.setHostName("redis-14138.c9.us-east-1-4.ec2.cloud.redislabs.com");
+		redisConnectionFactory.setPort(14138);
+		redisConnectionFactory.setPassword("123456"); // change later for helm
+		return redisConnectionFactory;
+	}
+
+	@Bean
+	public RedisTemplate<String, Address> redisTemplate(RedisConnectionFactory cf) {
+		RedisTemplate<String, Address> redisTemplate = new RedisTemplate<String, Address>();
+		redisTemplate.setConnectionFactory(cf);
+		return redisTemplate;
+	}
+
+	@Bean
+	public CacheManager cacheManager(RedisTemplate<String, Address> redisTemplate) {
+		redisTemplate.setEnableDefaultSerializer(Boolean.TRUE);
+		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+		cacheManager.setDefaultExpiration(300);
+		cacheManager.initializeCaches();
+		cacheManager.setLoadRemoteCachesOnStartup(Boolean.TRUE);
+		return cacheManager;
+	}
 	
 	@Bean
-	public CacheManager cacheManager() {
-		GuavaCacheManager cacheManager = new GuavaCacheManager("address");
-		CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder().maximumSize(3_000).expireAfterWrite(1,
-				TimeUnit.DAYS);
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		
-		cacheManager.setCacheBuilder(cacheBuilder);
-		return cacheManager;
+		return builder.build();
 	}
 
 }

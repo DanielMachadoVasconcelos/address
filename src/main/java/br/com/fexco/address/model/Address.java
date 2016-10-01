@@ -1,14 +1,25 @@
 package br.com.fexco.address.model;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Document(collection="address")
-public class Address {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Address implements Serializable{
 
 	
+	/**
+	 * 
+	 */
+	@JsonIgnore
+	private static final long serialVersionUID = 1L;
 	@Id
 	private String postcode;
 	private String addressline1;
