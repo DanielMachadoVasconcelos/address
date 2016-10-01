@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="eircodeServiceMock" class="br.com.fexco.address.service.EircodeServiceMock"></bean>
+	
+	<bean id="addressService" class="br.com.fexco.address.service.AddressService">
+		 <property name="ericodeService" ref="eircodeServiceMock" />
+	</bean>
+	
+	<bean id="addressEircodeController" class="br.com.fexco.address.controller.AddressEircodeController">
+		 <property name="addressService" ref="addressService" />
+	</bean>
+	
+	
+</beans>
