@@ -5,7 +5,7 @@
 
 	<bean id="eircodeService" class="br.com.fexco.address.service.EircodeService"></bean>
 		<bean id="addressService" class="br.com.fexco.address.service.AddressService">
-		 <property name="ericodeService" ref="eircodeService" />
+		 <property name="apiService" ref="eircodeService" />
 	</bean>
 	
 	<bean id="addressEircodeController" class="br.com.fexco.address.controller.AddressEircodeController">

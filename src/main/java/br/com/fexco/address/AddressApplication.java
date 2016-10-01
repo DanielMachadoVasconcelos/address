@@ -18,9 +18,9 @@ import org.springframework.web.client.RestTemplate;
 import br.com.fexco.address.model.Address;
 
 @Configuration
-@EnableAutoConfiguration
-@ComponentScan
 @EnableCaching
+@ComponentScan
+@EnableAutoConfiguration
 @ImportResource("classpath:/spring-bean.config.xml")
 public class AddressApplication {
 
@@ -28,6 +28,15 @@ public class AddressApplication {
 		SpringApplication.run(AddressApplication.class, args);
 	}
 
+	/**
+	 * <p>
+	 * Caching data with redis server.
+	 * 
+	 * @TODO: Change this to connect to a private distributed redis server. Used
+	 *        a free remote cloud redis server for explanation propurse.
+	 * 
+	 * @return {@link JedisConnectionFactory}
+	 */
 	@Bean
 	public JedisConnectionFactory redisConnectionFactory() {
 		JedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory();
@@ -37,6 +46,12 @@ public class AddressApplication {
 		return redisConnectionFactory;
 	}
 
+	/**
+	 * Simple redis template for configurations propurse.
+	 * 
+	 * @param cf
+	 * @return {@link RedisTemplate}
+	 */
 	@Bean
 	public RedisTemplate<String, Address> redisTemplate(RedisConnectionFactory cf) {
 		RedisTemplate<String, Address> redisTemplate = new RedisTemplate<String, Address>();
@@ -44,6 +59,28 @@ public class AddressApplication {
 		return redisTemplate;
 	}
 
+	/**
+	 * <p>
+	 * Chache manager with redis to avoid db consume and rest application
+	 * requests.
+	 * 
+	 * <p>
+	 * Required: "Avoid repeated requests to hit the third party API. A proposed
+	 * solution is to use an in- memory cache."
+	 * 
+	 * <p>
+	 * 
+	 * @TODO: change this mechanism to bulk load on startup for: <br>
+	 *        <p>
+	 *        
+	 *        Make sure the previous requests survive on service restarts (e.g.
+	 *        after a new version of your service is deployed).
+	 *        A proposed solution involves a long term persistent mechanism,
+	 *        that preloads the in-memory cache on startup.
+	 * 
+	 * @param redisTemplate
+	 * @return {@link CacheManager}
+	 */
 	@Bean
 	public CacheManager cacheManager(RedisTemplate<String, Address> redisTemplate) {
 		redisTemplate.setEnableDefaultSerializer(Boolean.TRUE);
@@ -53,10 +90,15 @@ public class AddressApplication {
 		cacheManager.setLoadRemoteCachesOnStartup(Boolean.TRUE);
 		return cacheManager;
 	}
-	
+
+	/**
+	 * RestTemplate to consume third party API
+	 * 
+	 * @param builder
+	 * @return {@link RedisTemplate}
+	 */
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		
 		return builder.build();
 	}
 

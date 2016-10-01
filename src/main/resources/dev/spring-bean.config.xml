@@ -6,7 +6,7 @@
 	<bean id="eircodeServiceMock" class="br.com.fexco.address.service.EircodeServiceMock"></bean>
 	
 	<bean id="addressService" class="br.com.fexco.address.service.AddressService">
-		 <property name="ericodeService" ref="eircodeServiceMock" />
+		 <property name="apiService" ref="eircodeServiceMock" />
 	</bean>
 	
 	<bean id="addressEircodeController" class="br.com.fexco.address.controller.AddressEircodeController">

@@ -10,35 +10,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Document(collection="address")
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Address implements Serializable{
+import br.com.fexco.address.util.PostCodeValidator;
 
-	
-	/**
-	 * 
-	 */
+@Document(collection = "address")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Address implements Serializable {
+
 	@JsonIgnore
 	private static final long serialVersionUID = 1L;
-	@Id
-	private String postcode;
-	private String addressline1;
-	private String addressline2;
-	private String summaryline;
-	private String organisation;
-	private String street;
-	private String posttown;
-	private String county;
-
 	
+	@Id
+	public String postcode;
+    public String organisation;
+	public String premise;
+	public String dependentstreet;
+	public String street;
+	public String doubledependentlocality;
+	public String dependentlocality;
+	public String posttown;
+	public String county;
+	public String summaryline;
 	
 	public Address(String postcode) {
-		super();
 		this.postcode = postcode;
 	}
 
 	public Address() {
-		super();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -50,30 +47,6 @@ public class Address implements Serializable{
 		this.postcode = postcode;
 	}
 
-	public String getAddressline1() {
-		return addressline1;
-	}
-
-	public void setAddressline1(String addressline1) {
-		this.addressline1 = addressline1;
-	}
-
-	public String getAddressline2() {
-		return addressline2;
-	}
-
-	public void setAddressline2(String addressline2) {
-		this.addressline2 = addressline2;
-	}
-
-	public String getSummaryline() {
-		return summaryline;
-	}
-
-	public void setSummaryline(String summaryline) {
-		this.summaryline = summaryline;
-	}
-
 	public String getOrganisation() {
 		return organisation;
 	}
@@ -82,12 +55,44 @@ public class Address implements Serializable{
 		this.organisation = organisation;
 	}
 
+	public String getPremise() {
+		return premise;
+	}
+
+	public void setPremise(String premise) {
+		this.premise = premise;
+	}
+
+	public String getDependentstreet() {
+		return dependentstreet;
+	}
+
+	public void setDependentstreet(String dependentstreet) {
+		this.dependentstreet = dependentstreet;
+	}
+
 	public String getStreet() {
 		return street;
 	}
 
 	public void setStreet(String street) {
 		this.street = street;
+	}
+
+	public String getDoubledependentlocality() {
+		return doubledependentlocality;
+	}
+
+	public void setDoubledependentlocality(String doubledependentlocality) {
+		this.doubledependentlocality = doubledependentlocality;
+	}
+
+	public String getDependentlocality() {
+		return dependentlocality;
+	}
+
+	public void setDependentlocality(String dependentlocality) {
+		this.dependentlocality = dependentlocality;
 	}
 
 	public String getPosttown() {
@@ -104,6 +109,14 @@ public class Address implements Serializable{
 
 	public void setCounty(String county) {
 		this.county = county;
+	}
+
+	public String getSummaryline() {
+		return summaryline;
+	}
+
+	public void setSummaryline(String summaryline) {
+		this.summaryline = summaryline;
 	}
 
 	@Override
@@ -124,5 +137,24 @@ public class Address implements Serializable{
 		}
 		Address other = (Address) obj;
 		return new EqualsBuilder().append(other.postcode, this.postcode).isEquals();
+	}
+
+	/**
+	 * <p>
+	 * For indexed search database useing poscode address identifier rather
+	 * summaryline.
+	 * 
+	 * @param fragment
+	 *            postcode or address fragment
+	 * @return Empty Address object with postcode or summary line filled.
+	 */
+	public static Address from(String fragment) {
+		if (new PostCodeValidator().isValid(fragment, null)) {
+			return new Address(fragment);
+		}
+
+		Address address = new Address();
+		address.setSummaryline(fragment);
+		return address;
 	}
 }

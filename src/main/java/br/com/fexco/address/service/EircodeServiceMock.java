@@ -1,20 +1,26 @@
 package br.com.fexco.address.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import br.com.fexco.address.model.Address;
+import br.com.fexco.address.util.AddressWrapper;
 
 public class EircodeServiceMock implements IEricodeService {
 
 	@Override
-	public Address findOne(String postcode) {
-		return new Address(postcode);
+	public List<Address> findEircode(AddressWrapper request) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public List<Address> listFrom(String postcode) {
-		return Arrays.asList(new Address(postcode));
+	public List<Address> findPremise(AddressWrapper request) {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+
+
+	
 
 }
