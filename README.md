@@ -30,7 +30,7 @@ docker run -P -d --name address microservice/address -p 8080:8080
 The Microservice is up and runnig. Access your browser and check it out.
 
 ```bash
-http://[localhost]:8080/postcoder-web-api/address-lookup/eircode/NR146PZ
+http://[localhost]:8080/postcoder-web-api/address-lookup/eircode/[NR146PZ]
 ```
 ## Next Release 1.0.1x
 
