@@ -2,6 +2,7 @@ package br.com.fexco.address.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
@@ -74,7 +75,9 @@ public class AddressService {
 		PageRequest pageRequest = new PageRequest(request.getPage(), 100);
 		Page<Address> page = addressRepository.findAll(
 				Example.of(request.getAddress(), ExampleMatcher.matching()
-						.withMatcher("summaryline", GenericPropertyMatcher.of(StringMatcher.CONTAINING, Boolean.TRUE))), pageRequest);
+						.withMatcher(StringUtils.isNotEmpty(request.getAddress().getPostcode())?
+								"postcode" : "summaryline"
+								, GenericPropertyMatcher.of(StringMatcher.CONTAINING, Boolean.TRUE))), pageRequest);
 		
 		return page.getContent();
 	}
@@ -98,7 +101,7 @@ public class AddressService {
 	 * @param params additional options for the service.
 	 * @return List of address
 	 */
-//	@Cacheable(value = "address-uk")
+	@Cacheable(value = "address-uk")
 	public List<Address> findPromise(AddressWrapper request) {
 		List<Address> addresses = searchInDataBase(request);
 		 

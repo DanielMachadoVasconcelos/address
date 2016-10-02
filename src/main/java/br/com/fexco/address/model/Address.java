@@ -20,16 +20,16 @@ public class Address implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	public String postcode;
-    public String organisation;
-	public String premise;
-	public String dependentstreet;
-	public String street;
-	public String doubledependentlocality;
-	public String dependentlocality;
-	public String posttown;
-	public String county;
-	public String summaryline;
+	private String postcode;
+    private String organisation;
+	private String premise;
+	private String dependentstreet;
+	private String street;
+	private String doubledependentlocality;
+	private String dependentlocality;
+	private String posttown;
+	private String county;
+	private String summaryline;
 	
 	public Address(String postcode) {
 		this.postcode = postcode;

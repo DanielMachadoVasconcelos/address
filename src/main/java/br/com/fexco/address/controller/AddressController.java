@@ -34,7 +34,7 @@ import br.com.fexco.address.util.AddressWrapper;
  */
 @RestController
 @RequestMapping("/postcoder-web-api/address-lookup")
-public class AddressEircodeController {
+public class AddressController {
 
 	private AddressService addressService;
 

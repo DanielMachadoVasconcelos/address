@@ -1,7 +1,12 @@
 package br.com.fexco.address;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,13 +25,16 @@ import br.com.fexco.address.model.Address;
 @Configuration
 @EnableCaching
 @ComponentScan
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @ImportResource("classpath:/spring-bean.config.xml")
 public class AddressApplication {
 
+	private static final Logger log = LoggerFactory.getLogger(AddressApplication.class);
+	
 	public static void main(String[] args) {
 		SpringApplication.run(AddressApplication.class, args);
 	}
+	
 
 	/**
 	 * <p>
@@ -48,6 +56,8 @@ public class AddressApplication {
 
 	/**
 	 * Simple redis template for configurations propurse.
+	 * 
+	 * @TODO: Put this in xml file for enverment swap, just like mongo db.
 	 * 
 	 * @param cf
 	 * @return {@link RedisTemplate}

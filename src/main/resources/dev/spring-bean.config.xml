@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	        http://www.springframework.org/schema/data/mongo  http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
 	<bean id="eircodeServiceMock" class="br.com.fexco.address.service.EircodeServiceMock"></bean>
-	
+
 	<bean id="addressService" class="br.com.fexco.address.service.AddressService">
-		 <property name="apiService" ref="eircodeServiceMock" />
+		<property name="apiService" ref="eircodeServiceMock" />
 	</bean>
-	
-	<bean id="addressEircodeController" class="br.com.fexco.address.controller.AddressEircodeController">
-		 <property name="addressService" ref="addressService" />
+
+	<bean id="addressController" class="br.com.fexco.address.controller.AddressController">
+		<property name="addressService" ref="addressService" />
 	</bean>
+
 	
-	
+	<!-- Place this connfig in diferent files for organizarion proporse -->
+	<!-- Connection to MongoDB server, change this for each envirament -->
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg>
+			<bean class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+				<constructor-arg>
+					<bean class="com.mongodb.MongoClient">
+						<constructor-arg>
+							<bean class="com.mongodb.MongoClientURI">
+								<constructor-arg value="mongodb://address-dev:123456@ds015325.mlab.com:15325/address" />
+							</bean>
+						</constructor-arg>
+					</bean>
+				</constructor-arg>
+				<constructor-arg value="address" />
+			</bean>
+		</constructor-arg>
+	</bean>
 </beans>
